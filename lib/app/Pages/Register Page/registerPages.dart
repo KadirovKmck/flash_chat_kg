@@ -1,11 +1,12 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fleshchat/app/Pages/homePage/home_pages.dart';
+import 'package:fleshchat/app/Pages/homePage/CHatPage/chat_page.dart';
 import 'package:fleshchat/app/Pages/modul/usersModuls/userModuls.dart';
 import 'package:fleshchat/app/Pages/widgets/contener_login.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
@@ -28,18 +29,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
 // }
   final users = FirebaseFirestore.instance.collection('users');
+  final _uid = Uuid().v4();
   Future<void> UModels() {
-    final userModels = UrModels(
-        email: emailController.text,
-        name: nameController.text,
-        id: passwordController.text);
+    final _userModels = UrModels(
+        email: emailController.text, name: nameController.text, id: _uid);
     return users
         .add(
-          userModels.toJson(),
+          _userModels.toJson(),
         )
-        .then((value) => print("User Added"))
+        .then((value) => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CChatPage(userModel: _userModels)))
+            })
         .catchError((error) => print("Failed to add user: $error"));
-    ;
   }
 
   Future<void> registerApp() async {
@@ -238,7 +242,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 onTap: () {
                   if (_formfield.currentState!.validate()) {
                     registerApp();
-                    Navigator.pushNamed(context, HomePages.route);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CChatPage()));
                   }
                 },
                 child: Container(

@@ -38,7 +38,7 @@ class ChatCard extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => chatPage()));
+                    MaterialPageRoute(builder: (context) => CChatPage()));
               },
             ),
           ],

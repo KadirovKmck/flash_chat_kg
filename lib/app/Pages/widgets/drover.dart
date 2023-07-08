@@ -37,9 +37,7 @@ class _DroverState extends State<Drover> {
         ListTile(
           leading: const Icon(EvaIcons.home),
           title: Text("Home"),
-          onTap: () {
-            Navigator.pushNamed(context, HomePages.route);
-          },
+          onTap: () {},
         ),
         ListTile(
           leading: Icon(EvaIcons.people),

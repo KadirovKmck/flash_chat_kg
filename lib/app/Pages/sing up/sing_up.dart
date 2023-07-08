@@ -1,6 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fleshchat/app/Pages/homePage/home_pages.dart';
+import 'package:fleshchat/app/Pages/homePage/CHatPage/chat_page.dart';
 import 'package:fleshchat/app/Pages/widgets/contener_login.dart';
 import 'package:flutter/material.dart';
 
@@ -131,7 +131,8 @@ class LogInState extends State<LogIn> {
                 onTap: () {
                   if (formKey.currentState!.validate()) {
                     singIn();
-                    Navigator.pushNamed(context, HomePages.route);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CChatPage()));
                   }
                 },
                 child: Container(

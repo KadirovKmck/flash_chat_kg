@@ -1,4 +1,5 @@
 import 'package:fleshchat/app/Pages/Register%20Page/registerPages.dart';
+import 'package:fleshchat/app/Pages/homePage/CHatPage/chat_page.dart';
 import 'package:fleshchat/app/Pages/homePage/FirstPage.dart';
 import 'package:fleshchat/app/Pages/homePage/home_pages.dart';
 import 'package:fleshchat/app/Pages/sing%20up/sing_up.dart';
@@ -27,9 +28,9 @@ class FleshChat extends StatelessWidget {
       routes: {
         RegisterPage.route: (context) => const RegisterPage(),
         LogIn.route: (context) => const LogIn(),
-        HomePages.route: (context) => const HomePages(),
         FerstPage.route: (context) => FerstPage(),
         Drover.route: (context) => Drover(),
+        CChatPage.route: (context) => CChatPage(),
       },
       debugShowCheckedModeBanner: false,
 
