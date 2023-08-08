@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fleshchat/app/Pages/homePage/CHatPage/chat_page.dart';
+import 'package:fleshchat/app/Pages/modul/usersModuls/userModuls.dart';
 import 'package:fleshchat/app/Pages/widgets/contener_login.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +24,24 @@ class LogInState extends State<LogIn> {
     height: 30,
   );
   void singIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text);
+    final UserCredential credential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+    getUser(credential.user!.uid);
+  }
+
+  Future<void> getUser(String? uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final data = await users.doc(uid).get();
+    final urModels = UrModels.fromJson(data.data() as Map<String, dynamic>);
+    log('data---> $data');
+    log('User Model ---> $urModels');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CChatPage(
+                  userModel: urModels,
+                )));
   }
 
   bool passOff = false;

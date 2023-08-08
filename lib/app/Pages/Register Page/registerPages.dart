@@ -1,12 +1,16 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fleshchat/app/Pages/Class/constants/color.dart';
 import 'package:fleshchat/app/Pages/homePage/CHatPage/chat_page.dart';
 import 'package:fleshchat/app/Pages/modul/usersModuls/userModuls.dart';
 import 'package:fleshchat/app/Pages/widgets/contener_login.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
-import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
@@ -24,17 +28,23 @@ class _RegisterPageState extends State<RegisterPage> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   TextEditingController confirmController = TextEditingController();
-
+  XFile? _imageFile;
+  dynamic _picKetImageEror;
+  late String _profileImage;
+  final ImagePicker _picker = ImagePicker();
 // Future<void> addUsers()async{
 
 // }
   final users = FirebaseFirestore.instance.collection('users');
-  final _uid = Uuid().v4();
+  final _auth = FirebaseAuth.instance;
   Future<void> UModels() {
     final _userModels = UrModels(
-        email: emailController.text, name: nameController.text, id: _uid);
+        email: emailController.text,
+        name: nameController.text,
+        id: _auth.currentUser!.uid);
     return users
-        .add(
+        .doc(_auth.currentUser!.uid)
+        .set(
           _userModels.toJson(),
         )
         .then((value) => {
@@ -69,6 +79,28 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {}
   }
 
+  void _pickImageFromCamera() async {
+    final _pickedImage = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 95,
+        maxHeight: 300,
+        maxWidth: 300);
+    setState(() {
+      _imageFile = _pickedImage;
+    });
+  }
+
+  void _pickImageFromGallery() async {
+    final _pickedImage = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxHeight: 300,
+        maxWidth: 300);
+    setState(() {
+      _imageFile = _pickedImage;
+    });
+  }
+
   bool passwordOff = false;
   bool confirmoff = false;
 
@@ -93,6 +125,71 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               SizedBox(
                 height: 70,
+              ),
+              Row(
+                children: [
+                  // CircleAvatar purpleAccont
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 40,
+                    ),
+                    child: CircleAvatar(
+                      backgroundImage: _imageFile == null
+                          ? null
+                          : FileImage(
+                              File(_imageFile!.path),
+                            ),
+                      radius: 60,
+                      backgroundColor: AppColors.purpleAccent,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      // top camera icon
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.purple,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: AppColors.white,
+                          ),
+                          onPressed: () {
+                            _pickImageFromCamera();
+                            log('Pick image from camera');
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 6.0),
+                      // bottom camera icon
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.purple,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.photo,
+                            color: AppColors.white,
+                          ),
+                          onPressed: () {
+                            _pickImageFromGallery();
+                            log('Pick image from gallery');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.all(15),
